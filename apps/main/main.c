@@ -74,11 +74,11 @@ static void adc_event_handler(nrf_drv_adc_evt_t const * p_event)
         {
             printf("adc: %d\n", p_event->data.done.p_buffer[i]);
 
-            my_value = p_event->data.done.p_buffer[i];
-            simple_ble_notify_char(&my_char);
-
-            if(p_event->data.done.p_buffer[i] > 512)
+            if(p_event->data.done.p_buffer[i] > 512) {
+                my_value = p_event->data.done.p_buffer[i];
+                simple_ble_notify_char(&my_char);
                 led_on(LED);
+	    }
             else
                 led_off(LED);
             //NRF_LOG_PRINTF("Current sample value: %d\r\n", p_event->data.done.p_buffer[i]);
