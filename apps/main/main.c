@@ -24,7 +24,7 @@ static nrf_drv_adc_channel_t m_channel_config = NRF_DRV_ADC_DEFAULT_CHANNEL(NRF_
 #define ADC_TIMER_OP_QUEUE_SIZE          4  // Size of timer operation queues.
 
 // How long before the timer fires.
-#define ADC_TIMER_RATE     APP_TIMER_TICKS(500, ADC_TIMER_PRESCALER) // Blink every 0.5 seconds
+#define ADC_TIMER_RATE     APP_TIMER_TICKS(150, ADC_TIMER_PRESCALER)
 
 // Timer data structure
 APP_TIMER_DEF(adc_timer);
