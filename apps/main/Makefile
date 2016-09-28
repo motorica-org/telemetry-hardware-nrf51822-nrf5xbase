@@ -9,6 +9,12 @@ APPLICATION_SRCS += nrf_drv_adc.c
 APPLICATION_SRCS += app_util_platform.c
 APPLICATION_SRCS += nrf_drv_common.c
 
+APPLICATION_SRCS += nrf_drv_uart.c
+APPLICATION_SRCS += app_fifo.c
+APPLICATION_SRCS += app_uart_fifo.c
+APPLICATION_SRCS += nrf_delay.c
+APPLICATION_SRCS += retarget.c
+
 SOFTDEVICE_MODEL = s130
 SDK_VERSION = 11
 

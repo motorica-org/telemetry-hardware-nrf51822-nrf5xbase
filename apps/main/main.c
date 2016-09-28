@@ -10,6 +10,11 @@
 #include "nrf_drv_adc.h"
 #include "app_util_platform.h"
 
+#include "app_uart.h"
+#include "app_error.h"
+#include "nrf_drv_config.h"
+
+
 #define ADC_BUFFER_SIZE 10                                /**< Size of buffer for ADC samples.  */
 static nrf_adc_value_t       adc_buffer[ADC_BUFFER_SIZE]; /**< ADC buffer. */
 static nrf_drv_adc_channel_t m_channel_config = NRF_DRV_ADC_DEFAULT_CHANNEL(NRF_ADC_CONFIG_INPUT_7); /**< Channel instance. Default configuration used. */
@@ -36,6 +41,7 @@ static void adc_event_handler(nrf_drv_adc_evt_t const * p_event)
         uint32_t i;
         for (i = 0; i < p_event->data.done.size; i++)
         {
+            printf("adc: %d\n", p_event->data.done.p_buffer[i]);
             if(p_event->data.done.p_buffer[i] > 512)
                 led_on(LED);
             else
@@ -96,11 +102,40 @@ static void timer_start(void) {
     APP_ERROR_CHECK(err_code);
 }
 
+void uart_error_handle (app_uart_evt_t * p_event) {
+    if (p_event->evt_type == APP_UART_COMMUNICATION_ERROR) {
+        APP_ERROR_HANDLER(p_event->data.error_communication);
+    } else if (p_event->evt_type == APP_UART_FIFO_ERROR) {
+        APP_ERROR_HANDLER(p_event->data.error_code);
+    }
+}
+
 int main(void) {
 
     // Initialize.
     led_init(LED);
     led_off(LED);
+
+    uint32_t err_code;
+    const app_uart_comm_params_t comm_params = {
+          1,
+          2,
+          0,
+          0,
+          APP_UART_FLOW_CONTROL_DISABLED,
+          false,
+          UART_BAUDRATE_BAUDRATE_Baud115200
+      };
+
+    APP_UART_FIFO_INIT(&comm_params,
+                         256,
+                         256,
+                         uart_error_handle,
+                         APP_IRQ_PRIORITY_LOW,
+                         err_code);
+    APP_ERROR_CHECK(err_code);
+
+    printf("Start: \n");
 
     adc_config();
 

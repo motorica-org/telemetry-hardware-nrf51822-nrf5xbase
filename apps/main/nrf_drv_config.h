@@ -13,27 +13,14 @@
 #ifndef NRF_DRV_CONFIG_H
 #define NRF_DRV_CONFIG_H
 
-/**
- * Provide a non-zero value here in applications that need to use several
- * peripherals with the same ID that are sharing certain resources
- * (for example, SPI0 and TWI0). Obviously, such peripherals cannot be used
- * simultaneously. Therefore, this definition allows to initialize the driver
- * for another peripheral from a given group only after the previously used one
- * is uninitialized. Normally, this is not possible, because interrupt handlers
- * are implemented in individual drivers.
- * This functionality requires a more complicated interrupt handling and driver
- * initialization, hence it is not always desirable to use it.
- */
-#define PERIPHERAL_RESOURCE_SHARING_ENABLED  0
+#define NRF_LOG_USES_RTT 0
+#define NRF_LOG_USES_UART 0
 
 /* CLOCK */
-#define CLOCK_ENABLED 0
-
-#if (CLOCK_ENABLED == 1)
 #define CLOCK_CONFIG_XTAL_FREQ          NRF_CLOCK_XTALFREQ_Default
 #define CLOCK_CONFIG_LF_SRC             NRF_CLOCK_LF_SRC_Xtal
+#define CLOCK_CONFIG_LF_RC_CAL_INTERVAL RC_2000MS_CALIBRATION_INTERVAL
 #define CLOCK_CONFIG_IRQ_PRIORITY       APP_IRQ_PRIORITY_LOW
-#endif
 
 /* GPIOTE */
 #define GPIOTE_ENABLED 0
@@ -198,9 +185,9 @@
 #if (SPI0_ENABLED == 1)
 #define SPI0_USE_EASY_DMA 0
 
-#define SPI0_CONFIG_SCK_PIN         0  // Nucleum
-#define SPI0_CONFIG_MOSI_PIN        30 // Nucleum
-#define SPI0_CONFIG_MISO_PIN        29 // Nucleum
+#define SPI0_CONFIG_SCK_PIN         2
+#define SPI0_CONFIG_MOSI_PIN        3
+#define SPI0_CONFIG_MISO_PIN        4
 #define SPI0_CONFIG_IRQ_PRIORITY    APP_IRQ_PRIORITY_LOW
 
 #define SPI0_INSTANCE_INDEX 0
@@ -271,9 +258,11 @@
 #define SPIS_COUNT   (SPIS0_ENABLED + SPIS1_ENABLED + SPIS2_ENABLED)
 
 /* UART */
-#define UART0_ENABLED 0
+#define UART0_ENABLED 1
 
 #if (UART0_ENABLED == 1)
+#define RX_PIN_NUMBER             28
+#define TX_PIN_NUMBER             29
 #define UART0_CONFIG_HWFC         NRF_UART_HWFC_DISABLED
 #define UART0_CONFIG_PARITY       NRF_UART_PARITY_EXCLUDED
 #define UART0_CONFIG_BAUDRATE     NRF_UART_BAUDRATE_38400
@@ -348,6 +337,18 @@
 #define TWIS_ASSUME_INIT_AFTER_RESET_ONLY 0
 /* For more documentation see nrf_drv_twis.h file */
 #define TWIS_NO_SYNC_MODE 0
+/**
+ * @brief Definition for patching PAN problems
+ *
+ * Set this definition to nonzero value to patch anomalies
+ * from MPW3 - first lunch microcontroller.
+ *
+ * Concerns:
+ * - PAN-29: TWIS: incorrect bits in ERRORSRC
+ * - PAN-30: TWIS: STOP task does not work as expected
+ */
+#define NRF_TWIS_PATCH_FOR_MPW3 1
+
 
 /* QDEC */
 #define QDEC_ENABLED 0
