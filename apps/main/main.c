@@ -13,8 +13,10 @@
 #include "app_uart.h"
 #include "app_error.h"
 
+#include "simple_ble.h"
+#include "simple_adv.h"
 
-#define ADC_BUFFER_SIZE 10                                /**< Size of buffer for ADC samples.  */
+#define ADC_BUFFER_SIZE 1                                /**< Size of buffer for ADC samples.  */
 static nrf_adc_value_t       adc_buffer[ADC_BUFFER_SIZE]; /**< ADC buffer. */
 static nrf_drv_adc_channel_t m_channel_config = NRF_DRV_ADC_DEFAULT_CHANNEL(NRF_ADC_CONFIG_INPUT_7); /**< Channel instance. Default configuration used. */
 
@@ -30,6 +32,36 @@ static nrf_drv_adc_channel_t m_channel_config = NRF_DRV_ADC_DEFAULT_CHANNEL(NRF_
 // Timer data structure
 APP_TIMER_DEF(adc_timer);
 
+// Intervals for advertising and connections
+static simple_ble_config_t ble_config = {
+    .platform_id       = 0x90,              // used as 4th octect in device BLE address
+    .device_id         = DEVICE_ID_DEFAULT,
+    .adv_name          = "motorica.mech.протезик",       // used in advertisements if there is room
+    .adv_interval      = MSEC_TO_UNITS(500, UNIT_0_625_MS),
+    .min_conn_interval = MSEC_TO_UNITS(500, UNIT_1_25_MS),
+    .max_conn_interval = MSEC_TO_UNITS(1000, UNIT_1_25_MS)
+};
+
+// service and characteristic handles
+//  16-bit short uuid is 0x890f (bytes 12 and 13 of 128-bit UUID)
+static simple_ble_service_t my_service = {
+    // e35c8bac-a062-4e3f-856d-2cfa87f2f171
+    .uuid128 = {{0x71, 0xf1, 0xf2, 0x87, 0xfa, 0x2c, 0x6d, 0x85, 0x3f, 0x4e, 0x62, 0xa0, 0x8b, 0xac, 0x5c, 0xe3}}
+};
+static simple_ble_char_t my_char = {.uuid16 = 0x8910};
+static uint16_t my_value = 0;
+
+// called automatically by simple_ble_init
+void services_init (void) {
+    // add my service
+    simple_ble_add_service(&my_service);
+
+    // add my characteristic
+    simple_ble_add_characteristic(1, 0, 1, 0, // read, write, notify, vlen
+            1, (uint8_t*)&my_value,
+            &my_service, &my_char);
+}
+
 /**
  * @brief ADC interrupt handler.
  */
@@ -41,6 +73,10 @@ static void adc_event_handler(nrf_drv_adc_evt_t const * p_event)
         for (i = 0; i < p_event->data.done.size; i++)
         {
             printf("adc: %d\n", p_event->data.done.p_buffer[i]);
+
+            my_value = p_event->data.done.p_buffer[i];
+            simple_ble_notify_char(&my_char);
+
             if(p_event->data.done.p_buffer[i] > 512)
                 led_on(LED);
             else
@@ -137,6 +173,12 @@ int main(void) {
     printf("Start: \n");
 
     adc_config();
+
+    // Setup BLE
+    simple_ble_init(&ble_config);
+
+    // Now register our advertisement configure functions
+    simple_adv_only_name();
 
     timer_init();
     timer_start();

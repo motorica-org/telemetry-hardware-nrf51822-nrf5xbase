@@ -15,6 +15,14 @@ APPLICATION_SRCS += app_uart_fifo.c
 APPLICATION_SRCS += nrf_delay.c
 APPLICATION_SRCS += retarget.c
 
+APPLICATION_SRCS += simple_ble.c
+APPLICATION_SRCS += simple_adv.c
+APPLICATION_SRCS += ble_advdata.c
+APPLICATION_SRCS += ble_conn_params.c
+
+RAM_KB = 32
+FLASH_KB = 256
+
 SOFTDEVICE_MODEL = s130
 SDK_VERSION = 11
 
