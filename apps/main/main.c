@@ -159,7 +159,7 @@ int main(void) {
                          err_code);
     APP_ERROR_CHECK(err_code);
 
-    printf("Start: \n");
+    printf("[INIT]: start\n");
 
     adc_config();
 
@@ -171,6 +171,8 @@ int main(void) {
 
     timer_init();
     timer_start();
+
+    printf("[INIT]: finish\n");
 
     // Enter main loop.
     while (1) {
