@@ -66,12 +66,11 @@ static void adc_event_handler(nrf_drv_adc_evt_t const * p_event)
 {
     if (p_event->type == NRF_DRV_ADC_EVT_DONE)
     {
-        uint32_t i;
-        for (i = 0; i < p_event->data.done.size; i++)
+        for (uint32_t i = 0; i < p_event->data.done.size; i++)
         {
             printf("adc: %d\n", p_event->data.done.p_buffer[i]);
 
-            if(p_event->data.done.p_buffer[i] > 512) {
+            if (p_event->data.done.p_buffer[i] > 512) {
                 my_value = p_event->data.done.p_buffer[i];
                 simple_ble_notify_char(&my_char);
 	    }
@@ -81,10 +80,9 @@ static void adc_event_handler(nrf_drv_adc_evt_t const * p_event)
 }
 
 // Timer callback
-static void timer_handler (void* p_context) {
+static void timer_handler(void* p_context) {
     APP_ERROR_CHECK(nrf_drv_adc_buffer_convert(adc_buffer,ADC_BUFFER_SIZE));
-    uint32_t i;
-    for (i = 0; i < ADC_BUFFER_SIZE; i++)
+    for (uint32_t i = 0; i < ADC_BUFFER_SIZE; i++)
     {
         // manually trigger ADC conversion
         nrf_drv_adc_sample();
@@ -142,8 +140,8 @@ void uart_error_handle (app_uart_evt_t * p_event) {
 int main(void) {
     uint32_t err_code;
     const app_uart_comm_params_t comm_params = {
-          1,
-          2,
+          1, // RX pin
+          2, // TX pin
           0,
           0,
           APP_UART_FLOW_CONTROL_DISABLED,
@@ -152,8 +150,8 @@ int main(void) {
       };
 
     APP_UART_FIFO_INIT(&comm_params,
-                         256,
-                         256,
+                         256, // RX buffer size
+                         256, // TX buffer size
                          uart_error_handle,
                          APP_IRQ_PRIORITY_LOW,
                          err_code);
