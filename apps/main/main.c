@@ -59,6 +59,7 @@ void services_init (void) {
             &my_service, &my_char);
 }
 
+bool flag;
 /**
  * @brief ADC interrupt handler.
  */
@@ -68,12 +69,17 @@ static void adc_event_handler(nrf_drv_adc_evt_t const * p_event)
     {
         for (uint32_t i = 0; i < p_event->data.done.size; i++)
         {
-            printf("adc: %d\n", p_event->data.done.p_buffer[i]);
-
             if (p_event->data.done.p_buffer[i] > 512) {
-                my_value = p_event->data.done.p_buffer[i];
-                simple_ble_notify_char(&my_char);
-	    }
+                    if (!flag) {
+                            printf("flag: %u\n", flag);
+                            my_value = p_event->data.done.p_buffer[i];
+                            simple_ble_notify_char(&my_char);
+                    }
+                    flag = true;
+            }
+            if (p_event->data.done.p_buffer[i] < 100) {
+                    flag = false;
+            }
             //NRF_LOG_PRINTF("Current sample value: %d\r\n", p_event->data.done.p_buffer[i]);
         }
     }
