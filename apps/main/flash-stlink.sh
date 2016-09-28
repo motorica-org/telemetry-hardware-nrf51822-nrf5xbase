@@ -1,0 +1,2 @@
+openocd -f ../../openocd.cfg -c init -c targets -c 'reset halt' -c 'nrf51 mass_erase' -c 'flash write_image erase ../../nrf5x-base/sdk/nrf51_sdk_11.0.0/components/softdevice/s130/hex/s130_nrf51_2.0.0_softdevice.hex' -c 'reset run' -c 'shutdown'
+openocd -f ../../openocd.cfg -c init -c targets -c 'reset halt' -c 'flash write_image erase _build/main_s130.hex' -c 'verify_image _build/main_s130.hex' -c 'reset run' -c shutdown
