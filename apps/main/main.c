@@ -3,7 +3,6 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "led.h"
 #include "nordic_common.h"
 #include "app_timer.h"
 #include "softdevice_handler.h"
@@ -19,8 +18,6 @@
 #define ADC_BUFFER_SIZE 1                                /**< Size of buffer for ADC samples.  */
 static nrf_adc_value_t       adc_buffer[ADC_BUFFER_SIZE]; /**< ADC buffer. */
 static nrf_drv_adc_channel_t m_channel_config = NRF_DRV_ADC_DEFAULT_CHANNEL(NRF_ADC_CONFIG_INPUT_7); /**< Channel instance. Default configuration used. */
-
-#define LED 18
 
 // Some constants about timers
 #define ADC_TIMER_PRESCALER              0  // Value of the RTC1 PRESCALER register.
@@ -77,10 +74,7 @@ static void adc_event_handler(nrf_drv_adc_evt_t const * p_event)
             if(p_event->data.done.p_buffer[i] > 512) {
                 my_value = p_event->data.done.p_buffer[i];
                 simple_ble_notify_char(&my_char);
-                led_on(LED);
 	    }
-            else
-                led_off(LED);
             //NRF_LOG_PRINTF("Current sample value: %d\r\n", p_event->data.done.p_buffer[i]);
         }
     }
@@ -146,11 +140,6 @@ void uart_error_handle (app_uart_evt_t * p_event) {
 }
 
 int main(void) {
-
-    // Initialize.
-    led_init(LED);
-    led_off(LED);
-
     uint32_t err_code;
     const app_uart_comm_params_t comm_params = {
           1,
