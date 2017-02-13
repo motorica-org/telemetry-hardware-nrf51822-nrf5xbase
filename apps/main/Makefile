@@ -7,23 +7,27 @@ APPLICATION_SRCS += app_error.c
 APPLICATION_SRCS += nrf_drv_adc.c
 APPLICATION_SRCS += app_util_platform.c
 APPLICATION_SRCS += nrf_drv_common.c
+APPLICATION_SRCS += nrf_drv_clock.c
 
 APPLICATION_SRCS += nrf_drv_uart.c
+APPLICATION_SRCS += app_uart.c
 APPLICATION_SRCS += app_fifo.c
 APPLICATION_SRCS += app_uart_fifo.c
-APPLICATION_SRCS += nrf_delay.c
 APPLICATION_SRCS += retarget.c
 
 APPLICATION_SRCS += simple_ble.c
 APPLICATION_SRCS += simple_adv.c
 APPLICATION_SRCS += ble_advdata.c
 APPLICATION_SRCS += ble_conn_params.c
+APPLICATION_SRCS += ble_srv_common.c
 
 RAM_KB = 32
 FLASH_KB = 256
 
 SOFTDEVICE_MODEL = s130
-SDK_VERSION = 11
+SDK_VERSION = 12
+
+PROGRAMMER = stlinkv2
 
 LIBRARY_PATHS += .  ../../include
 SOURCE_PATHS += ../../src

@@ -105,19 +105,6 @@ void uart_error_handle(app_uart_evt_t *p_event) {
 }
 
 int main(void) {
-    uint32_t err_code;
-    const app_uart_comm_params_t comm_params = {
-	    1, // RX pin
-	    2, // TX pin
-	    0, 0, APP_UART_FLOW_CONTROL_DISABLED, false, UART_BAUDRATE_BAUDRATE_Baud115200
-    };
-
-    APP_UART_FIFO_INIT(&comm_params,
-                       256, // RX buffer size
-                       256, // TX buffer size
-                       uart_error_handle, APP_IRQ_PRIORITY_LOW, err_code);
-    APP_ERROR_CHECK(err_code);
-
     printf("[INIT]: start\n");
 
     adc_config();
