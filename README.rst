@@ -11,7 +11,7 @@ Ubuntu 16.04
 
 .. code:: sh
 
-    sudo apt-get install build-essential arm-none-eabi-gcc
+    sudo apt-get install build-essential git gcc-arm-none-eabi openocd
 
 Usage
 -----
