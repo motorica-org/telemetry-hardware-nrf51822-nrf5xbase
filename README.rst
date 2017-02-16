@@ -19,9 +19,21 @@ Usage
 .. code:: sh
 
     git clone $REPO --recursive # initialize submodules
+
     cd $REPO/apps/main/
-    make
+
+    make flash-softdevice # first usage
+
+    make # compile things
     make flash
+
+Other relevant commands
+
+.. code:: sh
+
+    make erase-all # erases both user code and softdevice
+    make reset
+    make startdebug # opens up gdb
 
 Pinout
 ------
